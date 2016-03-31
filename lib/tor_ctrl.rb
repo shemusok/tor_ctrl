@@ -42,7 +42,6 @@ class TorCtrl
   end
 
   def create amount = 1, tor_options = {}
-    ap options
     amount.times do
       with_lock options[:lock_file] do
         port, ctrl_port = choose_2_ports options[:base_port], options[:host]

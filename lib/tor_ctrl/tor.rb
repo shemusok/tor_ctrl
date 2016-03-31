@@ -52,10 +52,12 @@ class TorCtrl::Tor
     puts "starting tor with cmd: '#{cmd.join ' '}'"
     # @pid = Process.spawn(*cmd, {[:out, :err] => [log_file, 'w']}) # TODO: raise on shit
     @pid = Process.spawn(*cmd, err: :out) # TODO: raise on shit
-    sleep 4
-    if running?
-      puts "tor started with cmd '#{cmd.join ' '}'"
-      return self
+    16.times do
+      sleep 1
+      if running?
+        puts "tor started with cmd '#{cmd.join ' '}'"
+        return self
+      end
     end
     Process.kill 'TERM', pid
     Process.wait pid
