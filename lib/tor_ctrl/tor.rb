@@ -70,6 +70,11 @@ class TorCtrl::Tor
     puts "tor stoped - cmd '#{cmd.join ' '}'"
   end
 
+  def hup
+    Process.kill 'HUP', pid
+    puts "tor hupped - cmd '#{cmd.join ' '}'"
+  end
+
   def restart
     stop
     start

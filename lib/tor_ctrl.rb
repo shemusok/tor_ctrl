@@ -24,16 +24,15 @@ class TorCtrl
     lock_file: '/var/tmp/tor_ctrl/lock',
     base_port: 45000,
     host: 'localhost',
-    tor: DEFAULT_TOR_OPTIONS
+    tor: DEFAULT_TOR_OPTIONS,
+    shutdown: true
   }
 
-  def options
-    @options ||= DEFAULT_OPTIONS
-  end
-
+  attr_reader :options
   def init options = {}
     @options = DEFAULT_OPTIONS.deep_merge options
     Dir.mkdir @options[:tmp_dir] unless Dir.exists? @options[:tmp_dir]
+    at_exit {self.shutdown} if @options[:shutdown]
     self
   end
 
