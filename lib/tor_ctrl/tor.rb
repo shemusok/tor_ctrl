@@ -38,7 +38,7 @@ class TorCtrl::Tor
       --ControlPort #{ctrl_port}
       --PidFile #{pid_file}
       --DataDirectory #{data_directory}
-      --Logfile #{log_file}
+      --Log 'err file #{log_file}'
     > + options.collect {|k,v| ["--#{k}", v.to_s]}.flatten
   end
 
@@ -55,7 +55,7 @@ class TorCtrl::Tor
   def start
     puts "starting tor with cmd: '#{cmd.join ' '}'"
     # @pid = Process.spawn(*cmd, {[:out, :err] => [log_file, 'w']}) # TODO: raise on shit
-    @pid = Process.spawn(*cmd, err: :out) # TODO: raise on shit
+    @pid = Process.spawn(*cmd, {[:out, :err] => [log_file, 'w']}) # TODO: raise on shit
     16.times do
       sleep 1
       if running?
