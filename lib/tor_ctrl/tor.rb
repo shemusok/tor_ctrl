@@ -11,6 +11,10 @@ class TorCtrl::Tor
     @options = options
   end
 
+  def to_s
+    "socks5://localhost:#{port}"
+  end
+
   def ctrl
     @ctrl ||= TorCtrl.instance
   end
