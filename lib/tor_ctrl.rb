@@ -41,15 +41,18 @@ class TorCtrl
   end
 
   def create amount = 1, tor_options = {}
-    amount.times do
+    new_tors = amount.times.collect do
       with_lock options[:lock_file] do
         port, ctrl_port = choose_2_ports options[:base_port], options[:host]
         opts = options[:tor].deep_merge tor_options
         tor = Tor.new port, ctrl_port, opts
         tor.start
         tors << tor
+        tor
       end
     end
+    return new_tors.first if new_tors.count == 1
+    new_tors
   end
 
   def shutdown
