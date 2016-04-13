@@ -38,7 +38,7 @@ class TorCtrl::Tor
       --ControlPort #{ctrl_port}
       --PidFile #{pid_file}
       --DataDirectory #{data_directory}
-      --Log 'err file #{log_file}'
+      --Log err\ file\ #{log_file}
     > + options.collect {|k,v| ["--#{k}", v.to_s]}.flatten
   end
 
