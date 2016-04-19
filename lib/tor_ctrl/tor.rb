@@ -28,7 +28,10 @@ class TorCtrl::Tor
   end
 
   def data_directory
-    @data_directory ||= "#{ctrl.options[:tmp_dir]}/#{port}"
+    return @data_directory if @data_directory
+    @data_directory = "#{ctrl.options[:tmp_dir]}/#{port}"
+    Dir.mkdir @data_directory unless Dir.exists? @data_directory
+    @data_directory
   end
 
   def cmd
@@ -53,7 +56,7 @@ class TorCtrl::Tor
   end
 
   def start
-    puts "starting tor with cmd: '#{cmd.join ' '}'"
+    puts "starting tor with cmd: '#{cmd.join ' '} > #{log_file}'"
     # @pid = Process.spawn(*cmd, {[:out, :err] => [log_file, 'w']}) # TODO: raise on shit
     @pid = Process.spawn(*cmd, {[:out, :err] => [log_file, 'w']}) # TODO: raise on shit
     16.times do
