@@ -9,6 +9,8 @@ require 'active_support/core_ext/hash/deep_merge'
 require 'awesome_print'
 
 class TorCtrl
+  class PortIsBusy < RuntimeError; end
+
   include Singleton
   include FileLocker
   include PortChooser
@@ -38,6 +40,19 @@ class TorCtrl
 
   def tors
     @tors ||= []
+  end
+
+  def create_one port = 45000, tor_options = {}
+    raise PortIsBusy if port_open? port
+    ctrl_port = choose_port 55000
+    raise PortIsBusy if port_open? ctrl_port
+    with_lock options[:lock_file] do
+      opts = options[:tor].deep_merge tor_options
+      tor = Tor.new port, ctrl_port, opts
+      tor.start
+      tors << tor
+      tor
+    end
   end
 
   def create amount = 1, tor_options = {}
